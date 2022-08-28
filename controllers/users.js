@@ -67,16 +67,13 @@ const updateUserAvatarById = async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.user._id, {
       avatar: req.body.avatar,
-    }, { runValidators: true });
+    }, { new: true });
     if (!user) {
       return res.status(ID_CODE).send({ message: 'Пользователь с указанным id не найден.' });
     }
 
     return res.status(SUCCESS_CODE).send(user);
   } catch (e) {
-    if (e.name === 'ValidationError') {
-      return res.status(DATA_CODE).send({ message: 'Переданы неккоректные данные', ...e });
-    }
     return res.status(SERVER_CODE).send({ message: 'Произошла ошибка на сервере', ...e });
   }
 };
