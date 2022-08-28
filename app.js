@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const {
   userRoutes,
   cardRoutes,
-  router,
 } = require('./routes/index');
 
 const {
@@ -19,12 +18,11 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(router);
 app.use(userRoutes);
 app.use(cardRoutes);
 
-app.get('/', (req, res) => {
-  res.send('Hello Wodfdrld');
+app.all('*', (req, res) => {
+  res.status(404).send({ message: 'Страница не найдена' });
 });
 
 async function main() {

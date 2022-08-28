@@ -2,7 +2,6 @@ const express = require('express');
 
 const userRoutes = express.Router();
 const cardRoutes = express.Router();
-const router = express.Router();
 
 const {
   createUser,
@@ -31,8 +30,4 @@ cardRoutes.delete('/cards/:cardId', express.json(), deleteCardById);
 cardRoutes.put('/cards/:cardId/likes', express.json(), likeCardById);
 cardRoutes.delete('/cards/:cardId/likes', express.json(), dislikeCardById);
 
-router.patch('/404', express.json(), (req, res) => {
-  res.status(404).send({ message: 'Страница не найдена' }, res.body);
-});
-
-module.exports = { userRoutes, cardRoutes, router };
+module.exports = { userRoutes, cardRoutes };
