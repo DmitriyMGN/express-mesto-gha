@@ -1,4 +1,4 @@
-const Card = require('../models/Card');
+const Card = require('../models/card');
 
 const SUCCESS_CODE = 200;
 const DATA_CODE = 400;

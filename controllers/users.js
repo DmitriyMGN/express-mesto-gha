@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require('../models/user');
 
 const SUCCESS_CODE = 200;
 const DATA_CODE = 400;
