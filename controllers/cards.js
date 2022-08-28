@@ -52,7 +52,7 @@ const likeCardById = async (req, res) => {
       { new: true },
     );
     if (!like) {
-      return res.status(ID_CODE).send({ message: 'Карточка с указанным id не найдена.' });
+      return res.status(ID_CODE).send({ message: 'Карточка с указанным id не найдена. ' });
     }
 
     return res.status(SUCCESS_CODE).send(like);
