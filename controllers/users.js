@@ -37,6 +37,9 @@ const getUserById = async (req, res) => {
 
     return res.status(SUCCESS_CODE).send(user);
   } catch (e) {
+    if (e.name === 'CastError') {
+      return res.status(DATA_CODE).send({ message: 'Переданы неккоректные данные' });
+    }
     return res.status(SERVER_CODE).send({ message: 'Произошла ошибка на сервере', ...e });
   }
 };
@@ -54,8 +57,8 @@ const updateUserInfoById = async (req, res) => {
 
     return res.status(SUCCESS_CODE).send(user);
   } catch (e) {
-    if (e.name === 'ValidationError') {
-      return res.status(DATA_CODE).send({ message: 'Переданы неккоректные данные', ...e });
+    if (e.name === 'CastError') {
+      return res.status(DATA_CODE).send({ message: 'Переданы неккоректные данные' });
     }
     return res.status(SERVER_CODE).send({ message: 'Произошла ошибка на сервере', ...e });
   }
@@ -72,8 +75,8 @@ const updateUserAvatarById = async (req, res) => {
 
     return res.status(SUCCESS_CODE).send(user);
   } catch (e) {
-    if (e.name === 'ValidationError') {
-      return res.status(DATA_CODE).send({ message: 'Переданы неккоректные данные', ...e });
+    if (e.name === 'CastError') {
+      return res.status(DATA_CODE).send({ message: 'Переданы неккоректные данные' });
     }
     return res.status(SERVER_CODE).send({ message: 'Произошла ошибка на сервере', ...e });
   }
