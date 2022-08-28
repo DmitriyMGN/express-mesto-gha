@@ -38,7 +38,7 @@ const updateUserInfoById = async (req, res) => {
     const user = await User.findByIdAndUpdate(req.user._id, {
       name: req.body.name,
       about: req.body.about,
-    });
+    }, { new: true });
     return await res.status(200).send(user);
   } catch (e) {
     return res.status(500).send({ message: 'Произошла ошибка на сервере', ...e });
@@ -49,7 +49,7 @@ const updateUserAvatarById = async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.user._id, {
       avatar: req.body.avatar,
-    });
+    }, { new: true });
     return await res.status(200).send(user);
   } catch (e) {
     return res.status(500).send({ message: 'Произошла ошибка на сервере', ...e });
