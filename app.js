@@ -20,8 +20,7 @@ app.use((req, res, next) => {
 
 app.use(userRoutes);
 app.use(cardRoutes);
-
-app.all('*', (req, res) => {
+app.use((req, res) => {
   res.status(404).send({ message: 'Страница не найдена' });
 });
 
