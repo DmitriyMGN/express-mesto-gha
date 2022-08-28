@@ -1,35 +1,43 @@
 const Card = require('../models/Card');
 
+const SUCCESS_CODE = 200;
+const DATA_CODE = 400;
+const ID_CODE = 404;
+const SERVER_CODE = 500;
+
 const createCard = async (req, res) => {
   try {
     const card = await new Card({ owner: req.user._id, ...req.body }).save();
 
-    return res.status(200).send(card);
+    return res.status(SUCCESS_CODE).send(card);
   } catch (e) {
     if (e.name === 'ValidationError') {
-      return res.status(400).send({ message: 'Переданы неккоректные данные', ...e });
+      return res.status(DATA_CODE).send({ message: 'Переданы неккоректные данные', ...e });
     }
-    return res.status(500).send({ message: e.name, ...e });
+    return res.status(SERVER_CODE).send({ message: 'Произошла ошибка на сервере', ...e });
   }
 };
 
 const getCards = async (req, res) => {
   try {
     const cards = await Card.find({});
-    res.status(200).send(cards);
+    return res.status(SUCCESS_CODE).send(cards);
   } catch (e) {
-    res.status(500).send({ message: 'Произошла ошибка на сервере', ...e });
+    return res.status(SERVER_CODE).send({ message: 'Произошла ошибка на сервере', ...e });
   }
 };
 
 const deleteCardById = async (req, res) => {
   try {
     const { cardId } = req.params;
-    await Card.findByIdAndRemove(cardId);
+    const card = await Card.findByIdAndRemove(cardId);
+    if (!card) {
+      return res.status(ID_CODE).send({ message: 'Карточка с указанным id не найдена.' });
+    }
 
-    return res.status(200).send({ message: 'Карточка удалена' });
+    return res.status(SUCCESS_CODE).send({ message: 'Карточка удалена' });
   } catch (e) {
-    return res.status(500).send({ message: 'Такой карточки не существует' });
+    return res.status(SERVER_CODE).send({ message: 'Произошла ошибка на сервере', ...e });
   }
 };
 
@@ -40,9 +48,16 @@ const likeCardById = async (req, res) => {
       { $addToSet: { likes: req.user._id } },
       { new: true },
     );
-    return res.status(200).send(like);
+    if (!like) {
+      return res.status(ID_CODE).send({ message: 'Карточка с указанным id не найдена.' });
+    }
+
+    return res.status(SUCCESS_CODE).send(like);
   } catch (e) {
-    return res.status(500).send({ message: 'Такой карточки не существует' });
+    if (e.name === 'ValidationError') {
+      return res.status(DATA_CODE).send({ message: 'Переданы неккоректные данные', ...e });
+    }
+    return res.status(SERVER_CODE).send({ message: 'Произошла ошибка на сервере', ...e });
   }
 };
 
@@ -53,9 +68,16 @@ const dislikeCardById = async (req, res) => {
       { $pull: { likes: req.user._id } },
       { new: true },
     );
-    return res.status(200).send(dislike);
+    if (!dislike) {
+      return res.status(ID_CODE).send({ message: 'Карточка с указанным id не найдена.' });
+    }
+
+    return res.status(SUCCESS_CODE).send(dislike);
   } catch (e) {
-    return res.status(500).send({ message: 'Такой карточки не существует' });
+    if (e.name === 'ValidationError') {
+      return res.status(DATA_CODE).send({ message: 'Переданы неккоректные данные', ...e });
+    }
+    return res.status(SERVER_CODE).send({ message: 'Произошла ошибка на сервере', ...e });
   }
 };
 
