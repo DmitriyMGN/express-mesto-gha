@@ -49,7 +49,7 @@ const updateUserInfoById = async (req, res) => {
     const user = await User.findByIdAndUpdate(req.user._id, {
       name: req.body.name,
       about: req.body.about,
-    }, { runValidators: true });
+    }, { new: true, runValidators: true });
 
     if (!user) {
       return res.status(ID_CODE).send({ message: 'Пользователь с указанным id не найден.' });
