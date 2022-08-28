@@ -49,16 +49,15 @@ const updateUserInfoById = async (req, res) => {
     const user = await User.findByIdAndUpdate(req.user._id, {
       name: req.body.name,
       about: req.body.about,
-    }, { new: true });
+    }, { runValidators: true });
 
     if (!user) {
       return res.status(ID_CODE).send({ message: 'Пользователь с указанным id не найден.' });
     }
-
     return res.status(SUCCESS_CODE).send(user);
   } catch (e) {
-    if (e.name === 'CastError') {
-      return res.status(DATA_CODE).send({ message: 'Переданы неккоректные данные' });
+    if (e.name === 'ValidationError') {
+      return res.status(DATA_CODE).send({ message: 'Переданы неккоректные данные', ...e });
     }
     return res.status(SERVER_CODE).send({ message: 'Произошла ошибка на сервере', ...e });
   }
@@ -68,15 +67,15 @@ const updateUserAvatarById = async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.user._id, {
       avatar: req.body.avatar,
-    }, { new: true });
+    }, { runValidators: true });
     if (!user) {
       return res.status(ID_CODE).send({ message: 'Пользователь с указанным id не найден.' });
     }
 
     return res.status(SUCCESS_CODE).send(user);
   } catch (e) {
-    if (e.name === 'CastError') {
-      return res.status(DATA_CODE).send({ message: 'Переданы неккоректные данные' });
+    if (e.name === 'ValidationError') {
+      return res.status(DATA_CODE).send({ message: 'Переданы неккоректные данные', ...e });
     }
     return res.status(SERVER_CODE).send({ message: 'Произошла ошибка на сервере', ...e });
   }
