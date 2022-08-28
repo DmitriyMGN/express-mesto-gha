@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const {
   userRoutes,
   cardRoutes,
+  router,
 } = require('./routes/index');
 
 const {
@@ -15,10 +16,10 @@ app.use((req, res, next) => {
   req.user = {
     _id: '630869fbb0fb1677388d05c4',
   };
-
   next();
 });
 
+app.use(router);
 app.use(userRoutes);
 app.use(cardRoutes);
 
