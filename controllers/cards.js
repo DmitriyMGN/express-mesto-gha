@@ -69,7 +69,7 @@ const dislikeCardById = async (req, res) => {
       { new: true },
     );
     if (!dislike) {
-      return res.status(ID_CODE).send({ message: 'Карточка с указанным id не найдена.' });
+      return res.status(ID_CODE).send({ message: 'Карточка с указанным id не найдена. ' });
     }
 
     return res.status(SUCCESS_CODE).send(dislike);
