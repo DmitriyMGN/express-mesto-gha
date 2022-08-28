@@ -69,7 +69,7 @@ const updateUserAvatarById = async (req, res) => {
       avatar: req.body.avatar,
     }, { new: true });
     if (!user) {
-      return res.status(ID_CODE).send({ message: 'Пользователь с указанным id не найден. ' });
+      return res.status(ID_CODE).send({ message: 'Пользователь с указанным id не найден.' });
     }
 
     return res.status(SUCCESS_CODE).send(user);
