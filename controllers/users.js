@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const User = require('../models/user');
 
 const SUCCESS_CODE = 200;
@@ -6,8 +7,23 @@ const ID_CODE = 404;
 const SERVER_CODE = 500;
 
 const createUser = async (req, res) => {
+  const {
+    name,
+    about,
+    avatar,
+    email,
+    password,
+  } = req.body;
+
   try {
-    const user = await new User(req.body).save();
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await new User({
+      name,
+      about,
+      avatar,
+      email,
+      password: hashedPassword,
+    }).save();
 
     return res.status(SUCCESS_CODE).send(user);
   } catch (e) {
@@ -78,10 +94,25 @@ const updateUserAvatarById = async (req, res) => {
   }
 };
 
+const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(401).send({ message: 'Поля должны быть заполнены' });
+  }
+  try {
+    const user = await User.findOne({ email });
+    res.status(SUCCESS_CODE).send(users);
+  } catch (e) {
+    res.status(SERVER_CODE).send({ message: 'Произошла ошибка на сервере', ...e });
+  }
+};
+
 module.exports = {
   createUser,
   getUsers,
   getUserById,
   updateUserInfoById,
   updateUserAvatarById,
+  login,
 };
