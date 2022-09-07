@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 const SUCCESS_CODE = 200;
@@ -100,11 +101,28 @@ const login = async (req, res) => {
   if (!email || !password) {
     return res.status(401).send({ message: 'Поля должны быть заполнены' });
   }
+
   try {
     const user = await User.findOne({ email });
-    res.status(SUCCESS_CODE).send(users);
+    if (!user) {
+      return res.status(ID_CODE).send({ message: 'Пользователь не найден' });
+    }
+
+    const isUserValid = await bcrypt.compare(password, user.password);
+    if (isUserValid) {
+      const token = jwt.sign({ _id: user._id }, 'SECRET');
+      res.cookie('jwt', token, {
+        maxAge: 604800,
+        httpOnly: true,
+        sameSite: true,
+      });
+      return res.status(SUCCESS_CODE).send(user);
+    }
+    return res.status(401).send({ message: 'Неверный логин или пароль' });
   } catch (e) {
-    res.status(SERVER_CODE).send({ message: 'Произошла ошибка на сервере', ...e });
+    return res
+      .status(SERVER_CODE)
+      .send({ message: 'Произошла ошибка на сервере', ...e });
   }
 };
 

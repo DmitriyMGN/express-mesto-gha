@@ -4,7 +4,6 @@ const userRoutes = express.Router();
 const cardRoutes = express.Router();
 
 const {
-  createUser,
   getUsers,
   getUserById,
   updateUserInfoById,
@@ -20,7 +19,6 @@ const {
 
 userRoutes.get('/users', express.json(), getUsers);
 userRoutes.get('/users/:userId', express.json(), getUserById);
-userRoutes.post('/users', express.json(), createUser);
 userRoutes.patch('/users/me', express.json(), updateUserInfoById);
 userRoutes.patch('/users/me/avatar', express.json(), updateUserAvatarById);
 
