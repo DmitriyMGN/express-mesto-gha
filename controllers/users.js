@@ -16,6 +16,10 @@ const createUser = async (req, res) => {
     password,
   } = req.body;
 
+  if (!email || !password) {
+    return res.status(401).send({ message: 'Введите логин или пароль' });
+  }
+
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await new User({
@@ -28,9 +32,6 @@ const createUser = async (req, res) => {
 
     return res.status(SUCCESS_CODE).send(user);
   } catch (e) {
-    if (e.name === 'ValidationError') {
-      return res.status(DATA_CODE).send({ message: 'Переданы неккоректные данные', ...e });
-    }
     return res.status(SERVER_CODE).send({ message: 'Произошла ошибка на сервере', ...e });
   }
 };
