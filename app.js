@@ -2,33 +2,17 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
-const {
-  userRoutes,
-  cardRoutes,
-} = require('./routes/index');
-const {
-  createUser,
-  login,
-} = require('./controllers/users');
-const {
-  auth,
-} = require('./middlewares/auth');
+const { userRoutes, cardRoutes } = require('./routes/index');
+const { createUser, login } = require('./controllers/users');
+const { auth } = require('./middlewares/auth');
 
-const {
-  PORT = 3000,
-} = process.env;
+const { PORT = 3000 } = process.env;
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '630869fbb0fb1677388d05c4',
-  };
-  next();
-});
 app.post('/signin', login);
 app.post('/signup', createUser);
 

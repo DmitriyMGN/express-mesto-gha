@@ -127,6 +127,16 @@ const login = async (req, res) => {
   }
 };
 
+const getMyInfo = async (req, res) => {
+  const userId = req.user._id;
+  try {
+    const user = await User.findById(userId);
+    return res.status(SUCCESS_CODE).send(user);
+  } catch (e) {
+    return res.status(SERVER_CODE).send({ message: 'Произошла ошибка на сервере', ...e });
+  }
+};
+
 module.exports = {
   createUser,
   getUsers,
@@ -134,4 +144,5 @@ module.exports = {
   updateUserInfoById,
   updateUserAvatarById,
   login,
+  getMyInfo,
 };

@@ -8,6 +8,7 @@ const {
   getUserById,
   updateUserInfoById,
   updateUserAvatarById,
+  getMyInfo,
 } = require('../controllers/users');
 const {
   createCard,
@@ -18,6 +19,7 @@ const {
 } = require('../controllers/cards');
 
 userRoutes.get('/users', express.json(), getUsers);
+userRoutes.get('/users/me', express.json(), getMyInfo);
 userRoutes.get('/users/:userId', express.json(), getUserById);
 userRoutes.patch('/users/me', express.json(), updateUserInfoById);
 userRoutes.patch('/users/me/avatar', express.json(), updateUserAvatarById);

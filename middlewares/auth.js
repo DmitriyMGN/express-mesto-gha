@@ -7,7 +7,7 @@ const auth = async (req, res, next) => {
   try {
     payload = await jwt.verify(token, 'SECRET');
   } catch (err) {
-    return res.status(401).send({});
+    return res.status(401).send({ message: 'Пройдите авторизацию в системе' });
   }
 
   req.user = payload;
