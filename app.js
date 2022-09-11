@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const {
   userRoutes,
@@ -9,6 +10,9 @@ const {
   createUser,
   login,
 } = require('./controllers/users');
+const {
+  auth,
+} = require('./middlewares/auth');
 
 const {
   PORT = 3000,
@@ -17,6 +21,7 @@ const {
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 app.use((req, res, next) => {
   req.user = {
@@ -26,6 +31,8 @@ app.use((req, res, next) => {
 });
 app.post('/signin', login);
 app.post('/signup', createUser);
+
+app.use(auth);
 app.use(userRoutes);
 app.use(cardRoutes);
 app.use((req, res) => {
