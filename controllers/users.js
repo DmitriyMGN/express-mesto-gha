@@ -1,13 +1,11 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const { AutorizationError } = require('../errors/AutorizationError');
+const { NotFoundError } = require('../errors/NotFoundError');
+const { BadRequestError } = require('../errors/BadRequestError');
 
-const SUCCESS_CODE = 200;
-const DATA_CODE = 400;
-const ID_CODE = 404;
-const SERVER_CODE = 500;
-
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   const {
     name,
     about,
@@ -17,7 +15,7 @@ const createUser = async (req, res) => {
   } = req.body;
 
   if (!email || !password) {
-    return res.status(401).send({ message: 'Введите логин или пароль' });
+    return next(new AutorizationError('Введите логин или пароль'));
   }
 
   try {
@@ -30,39 +28,39 @@ const createUser = async (req, res) => {
       password: hashedPassword,
     }).save();
 
-    return res.status(SUCCESS_CODE).send(user);
-  } catch (e) {
-    return res.status(SERVER_CODE).send({ message: 'Произошла ошибка на сервере', ...e });
+    return res.send(user);
+  } catch (err) {
+    return next();
   }
 };
 
-const getUsers = async (req, res) => {
+const getUsers = async (req, res, next) => {
   try {
     const users = await User.find({});
-    res.status(SUCCESS_CODE).send(users);
+    return res.send(users);
   } catch (e) {
-    res.status(SERVER_CODE).send({ message: 'Произошла ошибка на сервере', ...e });
+    return next();
   }
 };
 
-const getUserById = async (req, res) => {
+const getUserById = async (req, res, next) => {
   try {
     const { userId } = req.params;
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(ID_CODE).send({ message: 'Такого пользователя не существует' });
+      return next(new NotFoundError('Такого пользователя не существует'));
     }
 
-    return res.status(SUCCESS_CODE).send(user);
+    return res.send(user);
   } catch (e) {
     if (e.name === 'CastError') {
-      return res.status(DATA_CODE).send({ message: 'Переданы неккоректные данные' });
+      return next(new BadRequestError('Переданы неккоректные данные пользователя'));
     }
-    return res.status(SERVER_CODE).send({ message: 'Произошла ошибка на сервере', ...e });
+    return next();
   }
 };
 
-const updateUserInfoById = async (req, res) => {
+const updateUserInfoById = async (req, res, next) => {
   try {
     const user = await User.findByIdAndUpdate(req.user._id, {
       name: req.body.name,
@@ -70,43 +68,43 @@ const updateUserInfoById = async (req, res) => {
     }, { new: true, runValidators: true });
 
     if (!user) {
-      return res.status(ID_CODE).send({ message: 'Пользователь с указанным id не найден.' });
+      return next(new NotFoundError('Такого пользователя не существует'));
     }
-    return res.status(SUCCESS_CODE).send(user);
+    return res.send(user);
   } catch (e) {
     if (e.name === 'ValidationError') {
-      return res.status(DATA_CODE).send({ message: 'Переданы неккоректные данные', ...e });
+      return next(new BadRequestError('Переданы неккоректные данные пользователя'));
     }
-    return res.status(SERVER_CODE).send({ message: 'Произошла ошибка на сервере', ...e });
+    return next();
   }
 };
 
-const updateUserAvatarById = async (req, res) => {
+const updateUserAvatarById = async (req, res, next) => {
   try {
     const user = await User.findByIdAndUpdate(req.user._id, {
       avatar: req.body.avatar,
     }, { new: true });
     if (!user) {
-      return res.status(ID_CODE).send({ message: 'Пользователь с указанным id не найден.' });
+      return next(new NotFoundError('Такого пользователя не существует'));
     }
 
-    return res.status(SUCCESS_CODE).send(user);
+    return res.send(user);
   } catch (e) {
-    return res.status(SERVER_CODE).send({ message: 'Произошла ошибка на сервере', ...e });
+    return next();
   }
 };
 
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(401).send({ message: 'Поля должны быть заполнены' });
+    return next(new AutorizationError('Введите логин или пароль'));
   }
 
   try {
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
-      return res.status(ID_CODE).send({ message: 'Пользователь не найден' });
+      return next(new NotFoundError('Такого пользователя не существует'));
     }
 
     const isUserValid = await bcrypt.compare(password, user.password);
@@ -117,23 +115,21 @@ const login = async (req, res) => {
         httpOnly: true,
         sameSite: true,
       });
-      return res.status(SUCCESS_CODE).send(user);
+      return res.send(user);
     }
-    return res.status(401).send({ message: 'Неверный логин или пароль' });
+    return next(new AutorizationError('Неверный логин или пароль'));
   } catch (e) {
-    return res
-      .status(SERVER_CODE)
-      .send({ message: 'Произошла ошибка на сервере', ...e });
+    return next();
   }
 };
 
-const getMyInfo = async (req, res) => {
+const getMyInfo = async (req, res, next) => {
   const userId = req.user._id;
   try {
     const user = await User.findById(userId);
-    return res.status(SUCCESS_CODE).send(user);
+    return res.send(user);
   } catch (e) {
-    return res.status(SERVER_CODE).send({ message: 'Произошла ошибка на сервере', ...e });
+    return next();
   }
 };
 
