@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const { userRoutes, cardRoutes } = require('./routes/index');
 const { createUser, login } = require('./controllers/users');
 const { auth } = require('./middlewares/auth');
+const { NotFoundError } = require('./errors/NotFoundError');
 
 const { PORT = 3000 } = process.env;
 
@@ -19,8 +20,12 @@ app.post('/signup', createUser);
 app.use(auth);
 app.use(userRoutes);
 app.use(cardRoutes);
-app.use((req, res) => {
-  res.status(404).send({ message: 'Страница не найдена' });
+app.use((req, res, next) => {
+  try {
+    return next(new NotFoundError('Страница не найдена.'));
+  } catch (err) {
+    return next();
+  }
 });
 
 app.use((err, req, res, next) => {

@@ -4,6 +4,7 @@ const User = require('../models/user');
 const { AutorizationError } = require('../errors/AutorizationError');
 const { NotFoundError } = require('../errors/NotFoundError');
 const { BadRequestError } = require('../errors/BadRequestError');
+const { ConflictError } = require('../errors/ConflictError');
 
 const createUser = async (req, res, next) => {
   const {
@@ -30,6 +31,9 @@ const createUser = async (req, res, next) => {
 
     return res.send(user);
   } catch (err) {
+    if (err.code === 11000) {
+      return next(new ConflictError('Пользователь с указанным email уже существует'));
+    }
     return next();
   }
 };
