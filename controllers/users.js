@@ -104,7 +104,7 @@ const login = async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select('+password');
     if (!user) {
       return res.status(ID_CODE).send({ message: 'Пользователь не найден' });
     }
