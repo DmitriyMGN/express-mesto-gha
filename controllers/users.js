@@ -124,7 +124,7 @@ const login = async (req, res, next) => {
       });
       return res.send(user);
     }
-    return next(new AutorizationError('Неверный логин или пароль'));
+    return next(new BadRequestError('Неверный логин или пароль'));
   } catch (e) {
     return next();
   }
