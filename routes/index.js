@@ -55,9 +55,47 @@ userRoutes.patch(
 );
 
 cardRoutes.get('/cards', express.json(), getCards);
-cardRoutes.post('/cards', express.json(), createCard);
-cardRoutes.delete('/cards/:cardId', express.json(), deleteCardById);
-cardRoutes.put('/cards/:cardId/likes', express.json(), likeCardById);
-cardRoutes.delete('/cards/:cardId/likes', express.json(), dislikeCardById);
+cardRoutes.post(
+  '/cards',
+  express.json(),
+  celebrate({
+    body: Joi.object().keys({
+      name: Joi.string().required().min(2).max(30),
+      link: Joi.string().required(),
+    }),
+  }),
+  createCard,
+);
+cardRoutes.delete(
+  '/cards/:cardId',
+  express.json(),
+  celebrate({
+    params: Joi.object().keys({
+      cardId: Joi.string().alphanum(),
+    }),
+  }),
+  deleteCardById,
+);
+
+cardRoutes.put(
+  '/cards/:cardId/likes',
+  express.json(),
+  celebrate({
+    params: Joi.object().keys({
+      cardId: Joi.string().alphanum(),
+    }),
+  }),
+  likeCardById,
+);
+cardRoutes.delete(
+  '/cards/:cardId/likes',
+  express.json(),
+  celebrate({
+    params: Joi.object().keys({
+      cardId: Joi.string().alphanum(),
+    }),
+  }),
+  dislikeCardById,
+);
 
 module.exports = { userRoutes, cardRoutes };

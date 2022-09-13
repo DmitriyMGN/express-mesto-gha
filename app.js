@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
+const { errors } = require('celebrate');
 const { userRoutes, cardRoutes } = require('./routes/index');
 const { createUser, login } = require('./controllers/users');
 const { auth } = require('./middlewares/auth');
@@ -27,6 +28,8 @@ app.use((req, res, next) => {
     return next();
   }
 });
+
+app.use(errors());
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
