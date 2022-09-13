@@ -102,7 +102,7 @@ const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return next(new AutorizationError('Введите логин или пароль'));
+    return next(new NotFoundError('Введите логин или пароль'));
   }
 
   try {
