@@ -16,6 +16,16 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.post(
+  '/signin',
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required(),
+      password: Joi.string().required().min(8),
+    }),
+  }),
+  login,
+);
+app.post(
   '/signup',
   celebrate({
     body: Joi.object().keys({
@@ -27,16 +37,6 @@ app.post(
     }),
   }),
   createUser,
-);
-app.post(
-  '/signin',
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required(),
-      password: Joi.string().required().min(8),
-    }),
-  }),
-  login,
 );
 
 app.use(auth);
