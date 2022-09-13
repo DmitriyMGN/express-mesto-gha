@@ -19,7 +19,7 @@ app.post(
   '/signin',
   celebrate({
     body: Joi.object().keys({
-      name: Joi.string().required().min(2).max(30),
+      email: Joi.email().required().unique(),
       password: Joi.password().required().min(8),
     }),
   }),
@@ -29,7 +29,7 @@ app.post(
   '/signup',
   celebrate({
     body: Joi.object().keys({
-      name: Joi.string().required().min(2).max(30),
+      email: Joi.email().required().unique(),
       password: Joi.password().required().min(8),
     }),
   }),
