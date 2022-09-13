@@ -119,7 +119,7 @@ const login = async (req, res, next) => {
     if (isUserValid) {
       const token = jwt.sign({ _id: user._id }, 'SECRET');
       res.cookie('jwt', token, {
-        maxAge: 604800,
+        maxAge: 3600000 * 24 * 7,
         httpOnly: true,
         sameSite: true,
       });
