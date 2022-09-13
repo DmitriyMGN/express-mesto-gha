@@ -29,7 +29,7 @@ const createUser = async (req, res, next) => {
       password: hashedPassword,
     }).save();
 
-    return res.send(user);
+    return res.send(user.select('-password'));
   } catch (err) {
     if (err.name === 'ValidationError') {
       return next(new BadRequestError('Переданы неккоректные данные пользователя'));
@@ -118,7 +118,7 @@ const login = async (req, res, next) => {
     if (isUserValid) {
       const token = jwt.sign({ _id: user._id }, 'SECRET');
       res.cookie('jwt', token, {
-        maxAge: 604800,
+        maxAge: '7d',
         httpOnly: true,
         sameSite: true,
       });
