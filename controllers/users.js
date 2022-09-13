@@ -32,9 +32,6 @@ const createUser = async (req, res, next) => {
 
     return res.send(user);
   } catch (err) {
-    if (err.name === 'ValidationError') {
-      return next(new BadRequestError('Переданы неккоректные данные пользователя'));
-    }
     if (err.code === 11000) {
       return next(new ConflictError('Пользователь с указанным email уже существует'));
     }
@@ -80,9 +77,6 @@ const updateUserInfoById = async (req, res, next) => {
     }
     return res.send(user);
   } catch (e) {
-    if (e.name === 'ValidationError') {
-      return next(new BadRequestError('Переданы неккоректные данные пользователя'));
-    }
     return next();
   }
 };
