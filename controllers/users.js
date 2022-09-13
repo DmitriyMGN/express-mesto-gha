@@ -29,7 +29,7 @@ const createUser = async (req, res, next) => {
       password: hashedPassword,
     }).save();
 
-    return res.send(user.select('-password'));
+    return res.send(user);
   } catch (err) {
     if (err.name === 'ValidationError') {
       return next(new BadRequestError('Переданы неккоректные данные пользователя'));
