@@ -112,7 +112,7 @@ const login = async (req, res, next) => {
   try {
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
-      return next(new BadRequestError('Такого пользователя не существует'));
+      return next(new AutorizationError('Такого пользователя не существует'));
     }
 
     const isUserValid = await bcrypt.compare(password, user.password);
@@ -125,7 +125,7 @@ const login = async (req, res, next) => {
       });
       return res.send(user);
     }
-    return next(new BadRequestError('Неверный логин или пароль'));
+    return next(new AutorizationError('Неверный логин или пароль'));
   } catch (e) {
     return next();
   }
