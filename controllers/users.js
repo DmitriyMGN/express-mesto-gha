@@ -21,13 +21,14 @@ const createUser = async (req, res, next) => {
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await new User({
+
+    const user = await User.create({
       name,
       about,
       avatar,
       email,
       password: hashedPassword,
-    }).save();
+    });
 
     return res.send(user);
   } catch (err) {

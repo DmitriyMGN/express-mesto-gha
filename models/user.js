@@ -33,6 +33,6 @@ const userSchema = new mongoose.Schema({
     minlength: 8,
     select: false,
   },
-});
+}, { versionKey: false, toObject: { useProjection: true }, toJSON: { useProjection: true } });
 
 module.exports = mongoose.model('user', userSchema);
